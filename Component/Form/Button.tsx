@@ -27,9 +27,8 @@ const Button = ({ title, onPress, type }: Props) => {
 
 const styles = StyleSheet.create({
     buttonStyle: {
-        padding: 10,
-        width:"100%",
-        margin:10
+        padding: 10,        
+        marginTop: 10,
     },
     textStyle: {
         alignSelf: "center",
