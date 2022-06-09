@@ -3,53 +3,46 @@
  */
 
 import React from "react"
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import Input from "../../Component/Form/Input"
 import Button from "../../Component/Form/Button"
-import Validator from "validator"
+import type { AuthStackParamList } from "../../Navigator/Auth"
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { isEmail, isNotEmpty } from "../../Utils/Form"
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList>
 
 const LoginScreen = () => {
-    const navigation = useNavigation()
+    const navigation = useNavigation<LoginScreenNavigationProp>()
     const [email, setEmail] = React.useState<string>("")
     const [password, setPassword] = React.useState<string>("")
     const [errorEmail, setErrorEmail] = React.useState<string | undefined>(undefined)
     const [errorPassword, setErrorPassword] = React.useState<string | undefined>(undefined)
 
-    const isValidAndISNotEmptyEmail = () => {
-        if (email == "") {
-            setErrorEmail("L'email ne doit pas être vide")
-        }
-        else if (!Validator.isEmail(email)) {
-            setErrorEmail("L'email est invalide")
-        } else {
-            setErrorEmail(undefined)
-        }
+    const onPasswordBlur = () => {
+        setErrorPassword(isNotEmpty(password) ? undefined : "Le mot de passe est vide")
     }
-    const isNotEmptyPassword = () => {
-        if (password == "") {
-            setErrorPassword("Le mot de passe ne doit pas être vide")
-        } else {
-            setErrorPassword(undefined)
+    const onEmailBlur = () => {
+        setErrorEmail(isNotEmpty(email) ? undefined : "L'email est vide")
+        if (email == undefined) {
+            setErrorEmail(isEmail(email) ? undefined : "L'email n'est pas valide")
         }
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
-                <Image source={require("../../Assets/Logo.png")} style={styles.logo} />
-            </View>
+        <SafeAreaView style={styles.container}>
             <View style={styles.formContainer}>
-                <Input placeholder="Email" onChangeText={(text) => { setEmail(text) }} value={email} type="text" error={errorEmail} onBlur={() => isValidAndISNotEmptyEmail()} />
-                <Input placeholder="Mot de passe" onChangeText={(text) => { setPassword(text) }} value={password} type="password" onBlur={()=> isNotEmptyPassword} error={errorPassword}/>
-                <Button title="Se connecter" type="primary" onPress={() => { }} />
+                <Input placeholder="Email" onChangeText={(text) => { setEmail(text) }} value={email} type="email" error={errorEmail} onBlur={() => onEmailBlur()} />
+                <Input placeholder="Mot de passe" onChangeText={(text) => { setPassword(text) }} value={password} type="password" onBlur={() => onPasswordBlur()} error={errorPassword} />
+                <Button title="Se connecter" type="primary" onPress={() => { Alert.alert("Bienvenue sur notre super application") }} />
             </View>
             <View style={styles.linkContainer}>
-                <TouchableOpacity onPress={() => { }}>
+                <TouchableOpacity onPress={() => { navigation.navigate("SignUpStep1") }}>
                     <Text style={styles.link}>S'inscrire</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -58,16 +51,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         justifyContent: "center",
-    },
-    logo: {
-        width: 120,
-        resizeMode: "contain",
-    },
-    logoContainer: {
-        alignItems: "center",
-        justifyContent: "center",
-        flex: 1,
-        backgroundColor: "#33058d"
     },
     formContainer: {
         flex: 1,

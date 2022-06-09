@@ -5,45 +5,35 @@
 
 import React from "react"
 import { useNavigation } from "@react-navigation/native"
-import { View, Image, StyleSheet } from "react-native"
+import { View,  StyleSheet } from "react-native"
 import Button from "../Component/Form/Button"
+import type { AuthStackParamList } from "../Navigator/Auth"
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList>
 
 const HomeScreen = () => {
-    const navigation = useNavigation()
+    const navigation = useNavigation<HomeScreenNavigationProp>()
     return (
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
-                <Image source={require("../Assets/Logo.png")} style={styles.logo} />
+        <View style={styles.buttonContainer}>
+            <View style={styles.button}>
+                <Button title="Se connecter" type="primary" onPress={() => { navigation.navigate("Login") }} />
             </View>
-            <View style={styles.buttonContainer}>
-                    <Button title="Se connecter" type="primary" onPress={() => { navigation.navigate("Login")}} />
-                    <Button title="S'inscrire" type="secondary" onPress={() => { }} />
+            <View style={styles.button}>
+                <Button title="S'inscrire" type="secondary" onPress={() => { navigation.navigate("SignUpStep1") }} />
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        justifyContent: "center",
-    },
-    logo: {
-        width: 150,
-        resizeMode: "contain",
-    },
-    logoContainer: {
-        alignItems: "center",
-        justifyContent: "center",
-        flex: 1,
-        backgroundColor: "#33058d"
-    },
     buttonContainer: {
         flex: 1,
         padding: 20,
-        alignItems: "center",
         justifyContent: "center",
+    },
+    button: {
+        marginBottom: 20,
     },
 })
 
