@@ -2,8 +2,8 @@
  * Composant pour l'étape 2 du formulaire d'inscription. Elle comporte une liste déroulante pour la civilité, un champ pour le nom, un champ pour le prénom, un datepiker pour la date de naissance et un bouton pour passer à l'étape suivante.
  */
 
-import React, { useState, useEffect } from "react"
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native"
+import React, { useState } from "react"
+import { View, StyleSheet, Text } from "react-native"
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import Input from "../../../Component/Form/Input"
 import Button from "../../../Component/Form/Button"
@@ -20,6 +20,7 @@ type error = {
     firstName?: string,
     lastName?: string,
     birthDate?: string,
+    civility?: string,
 }
 
 
@@ -41,23 +42,39 @@ const SignUpStep2Screen = () => {
         if (!isNotEmpty(birthDate)) {
             setErrors({ ...errors, "birthDate": "La date de naissance est vide" })
         }
-        if (Object.keys(errors).length === 0) {
-        navigation.navigate("Success", { email, password, firstName, lastName, birthDate, civility })
+        if (!isNotEmpty(civility)) {
+            setErrors({ ...errors, "civility": "La civilité est vide" })
         }
+        if (errors.birthDate == undefined && errors.firstName == undefined && errors.lastName == undefined && errors.civility == undefined) {
+            navigation.navigate("Success", { email, password, firstName, lastName, birthDate, civility })
+        }
+
     }
+
+    const onLastNameBlur = () => {
+        setErrors({ ...errors, "lastName": isNotEmpty(lastName) ? undefined : "Le nom est vide" })
+    }
+
+    const onFirstNameBlur = () => {
+        setErrors({ ...errors, "firstName": isNotEmpty(firstName) ? undefined : "Le prénom est vide" })
+    }
+
     return (
         <View style={styles.container}>
             <Picker
                 selectedValue={civility}
-                onValueChange={(itemValue, itemIndex) =>
+                onValueChange={(itemValue, itemIndex) => {
                     setCivility(itemValue)
-                }>
+                    setErrors({ ...errors, "civility": undefined })
+                }}>
+                <Picker.Item label="Civilité" value="" enabled={false} />
                 <Picker.Item label="Monsieur" value="Monsieur" />
                 <Picker.Item label="Madame" value="Madame" />
             </Picker>
-            <Input placeholder="Nom" type="text" onChangeText={setLastName} value={lastName} />
-            <Input placeholder="Prénom" type="text" onChangeText={setFirstName} value={firstName} />
-            <DatePicker date={birthDate} onChangeDate={setBirthDate} />
+            {errors.civility && <Text style={styles.error}>{errors.civility}</Text>}
+            <Input placeholder="Nom" type="text" onChangeText={setLastName} value={lastName} error={errors.lastName} onBlur={() => onLastNameBlur()} />
+            <Input placeholder="Prénom" type="text" onChangeText={setFirstName} value={firstName} error={errors.firstName} onBlur={() => onFirstNameBlur()} />
+            <DatePicker date={birthDate} onChangeDate={setBirthDate} error={errors.birthDate} />
             <Button onPress={() => onsubmit()} title="SUIVANT" type="primary" />
         </View>
     )
@@ -67,6 +84,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+    },
+    error: {
+        color: "red",
+        marginBottom: 10,
     },
 })
 export default SignUpStep2Screen

@@ -32,7 +32,7 @@ const Input = ({ placeholder, onChangeText, value, type, onBlur, error }: Props)
                 style={styles.inputStyle}
                 onBlur={onBlur}
             />
-            {type === "password" && <Pressable onPress={() => { toggleShowPassword() }} style={styles.icon}><Icon name={isShowPassword ? "eye-with-line": "eye" } size={40} /></Pressable>}
+            {type === "password" && <Pressable onPress={() => { toggleShowPassword() }} style={styles.icon}><Icon name={isShowPassword ? "eye-with-line": "eye" } size={40} color="#00a3e1" /></Pressable>}
             {error != undefined && <Text style={styles.error}>{error}</Text>}
         </View>
     )

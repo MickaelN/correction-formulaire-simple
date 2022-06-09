@@ -3,7 +3,7 @@
  */
 
 import React, { useState } from "react"
-import { StyleSheet, TextInput, Pressable, View } from "react-native"
+import { StyleSheet, TextInput, Pressable, View, Text } from "react-native"
 import Moment from "moment"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import Icon from "react-native-vector-icons/Entypo"
@@ -11,9 +11,10 @@ import Icon from "react-native-vector-icons/Entypo"
 type Props = {
     date: string,
     onChangeDate: (date: string) => void,
+    error? : string,
 }
 
-const DatePicker = ({ date, onChangeDate }: Props) => {
+const DatePicker = ({ date, onChangeDate, error }: Props) => {
     const [show, setShow] = useState<boolean>(false)
     const onsubmit = (date: Date) => {
         setShow(false)
@@ -38,8 +39,9 @@ const DatePicker = ({ date, onChangeDate }: Props) => {
             />}
             {/* Nous permet d'afficher la modal de date */}
             <Pressable onPress={() => setShow(true)} style={styles.icon}>
-                <Icon name="calendar" size={35} color="#000" />
+                <Icon name="calendar" size={35} color="#00a3e1" />
             </Pressable>
+            {error != undefined && <Text style={styles.error}>{error}</Text>}
         </View>
     )
 }
@@ -64,5 +66,10 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "center",
     },
+    error: {
+        color: "red",
+        fontSize: 12,
+        textAlign: "center",
+    }
 })
 export default DatePicker
